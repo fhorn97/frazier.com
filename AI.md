@@ -1,4 +1,4 @@
-# frazier.com
+# AI Instructions — frazier.com
 
 ## What This Is
 Personal website — founder, builder, photographer. Includes archived site versions and the travel map project.
