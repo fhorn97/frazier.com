@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Travel Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; }
+#map { width: 100%; height: 60vh; }
+header { padding: 2rem; text-align: center; background: linear-gradient(135deg, #1a1a2e, #16213e); }
+header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(90deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+header .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+header .stat { text-align: center; }
+header .stat .num { font-size: 2rem; font-weight: 700; color: #667eea; }
+header .stat .label { font-size: 0.85rem; color: #888; text-transform: uppercase; }
+.filters { padding: 1rem 2rem; background: #111; display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; align-items: center; }
+.filters button { padding: 0.5rem 1rem; border: 1px solid #333; border-radius: 2rem; background: transparent; color: #ccc; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+.filters button:hover, .filters button.active { background: #667eea; border-color: #667eea; color: #fff; }
+.filters input { padding: 0.5rem 1rem; border: 1px solid #333; border-radius: 2rem; background: #1a1a1a; color: #e0e0e0; font-size: 0.85rem; width: 200px; }
+#locations { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.location-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.location-card { background: #1a1a1a; border: 1px solid #222; border-radius: 12px; padding: 1.25rem; transition: all 0.2s; cursor: pointer; }
+.location-card:hover { border-color: #667eea; transform: translateY(-2px); }
+.location-card h3 { font-size: 1rem; margin-bottom: 0.5rem; color: #fff; }
+.location-card .meta { font-size: 0.8rem; color: #888; display: flex; gap: 1rem; flex-wrap: wrap; }
+.location-card .category { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+.cat-city { background: #1a3a5c; color: #5ba3e6; }
+.cat-hotel { background: #3a1a5c; color: #b35ae6; }
+.cat-restaurant { background: #5c3a1a; color: #e6a35b; }
+.cat-activity { background: #1a5c3a; color: #5be6a3; }
+.cat-historical { background: #5c1a1a; color: #e65b5b; }
+.cat-destination { background: #1a5c5c; color: #5be6e6; }
+#count-display { text-align: center; padding: 1rem; color: #888; font-size: 0.9rem; }
+/* Edit modal */
+#edit-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; }
+#edit-modal.open { display:flex; }
+#edit-panel { background:#1a1a1a; border:1px solid #333; border-radius:12px; padding:1.5rem; width:90%; max-width:500px; max-height:80vh; overflow-y:auto; }
+#edit-panel h2 { font-size:1.1rem; margin-bottom:1rem; color:#667eea; }
+#edit-panel label { display:block; font-size:0.8rem; color:#888; margin-top:0.75rem; }
+#edit-panel input, #edit-panel select { width:100%; padding:0.5rem; border:1px solid #333; border-radius:6px; background:#111; color:#e0e0e0; margin-top:0.25rem; font-size:0.9rem; }
+#edit-panel .suggestions { margin-top:0.5rem; }
+#edit-panel .suggestion { padding:0.4rem 0.6rem; border:1px solid #333; border-radius:6px; margin:0.25rem 0; cursor:pointer; font-size:0.85rem; }
+#edit-panel .suggestion:hover { border-color:#667eea; background:#1a2a4a; }
+#edit-panel .btn-row { display:flex; gap:0.5rem; margin-top:1.25rem; }
+#edit-panel button { flex:1; padding:0.6rem; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600; }
+#edit-panel .btn-save { background:#667eea; color:#fff; }
+#edit-panel .btn-cancel { background:#333; color:#ccc; }
+#edit-panel .btn-delete { background:#5c1a1a; color:#e65b5b; }
+#edit-panel .loading { color:#888; font-style:italic; font-size:0.85rem; }
+.location-card .edit-btn { float:right; background:none; border:1px solid #444; border-radius:6px; color:#888; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; }
+.location-card .edit-btn:hover { border-color:#667eea; color:#667eea; }
+#save-all { position:fixed; bottom:1.5rem; right:1.5rem; background:#667eea; color:#fff; border:none; padding:0.75rem 1.5rem; border-radius:2rem; font-size:0.9rem; font-weight:600; cursor:pointer; z-index:999; display:none; box-shadow:0 4px 20px rgba(102,126,234,0.4); }
+#save-all:hover { background:#5a6fd6; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌍 My Travel Map</h1>
+  <p style="color:#888">Every place I've been, captured through photos</p>
+  <div class="stats">
+    <div class="stat"><div class="num" id="stat-places">-</div><div class="label">Places</div></div>
+    <div class="stat"><div class="num" id="stat-countries">-</div><div class="label">Countries</div></div>
+    <div class="stat"><div class="num" id="stat-photos">-</div><div class="label">Photos</div></div>
+    <div class="stat"><div class="num" id="stat-years">-</div><div class="label">Years</div></div>
+  </div>
+</header>
+<div id="map"></div>
+<div class="filters">
+  <button class="active" data-cat="all">All</button>
+  <button data-cat="city">Cities</button>
+  <button data-cat="destination">Destinations</button>
+  <button data-cat="hotel">Hotels</button>
+  <button data-cat="restaurant">Restaurants</button>
+  <button data-cat="activity">Activities</button>
+  <button data-cat="historical">Historical</button>
+  <input type="text" id="search" placeholder="Search locations...">
+</div>
+<div id="count-display"></div>
+<div id="locations"><div class="location-grid" id="grid"></div></div>
+<button id="save-all" onclick="saveAll()">💾 Save Changes</button>
+<div id="edit-modal">
+  <div id="edit-panel">
+    <h2>📍 Edit Location</h2>
+    <label>Current Name</label>
+    <input id="edit-place" type="text">
+    <label>Category</label>
+    <select id="edit-cat">
+      <option value="city">City</option>
+      <option value="destination">Destination</option>
+      <option value="hotel">Hotel</option>
+      <option value="restaurant">Restaurant</option>
+      <option value="activity">Activity</option>
+      <option value="historical">Historical</option>
+    </select>
+    <label>Nearby Places (from OpenStreetMap)</label>
+    <div id="suggestions" class="suggestions"><span class="loading">Click "Lookup" on a card to search...</span></div>
+    <div class="btn-row">
+      <button class="btn-save" onclick="saveEdit()">Save</button>
+      <button class="btn-delete" onclick="deleteEdit()">Delete</button>
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+const hotelKeywords = ['hotel', 'resort', 'inn', 'lodge', 'montage', 'four seasons', 'ritz', 'hyatt', 'marriott', 'hilton', 'westin', 'sheraton', 'fairmont', 'mandarin', 'peninsula', 'aman', 'rosewood', 'st. regis', 'waldorf', 'w hotel', 'ace hotel', 'soho house', 'hostel', 'airbnb'];
+const restaurantKeywords = ['restaurant', 'café', 'cafe', 'bistro', 'bar', 'grill', 'kitchen', 'bakery', 'pizzeria', 'diner', 'tavern', 'pub', 'brewery', 'steakhouse', 'sushi'];
+const activityKeywords = ['park', 'beach', 'trail', 'mountain', 'lake', 'ski', 'golf', 'stadium', 'arena', 'gym', 'pool', 'spa', 'garden', 'zoo', 'aquarium', 'marina', 'harbor', 'surf', 'dive', 'hike', 'canyon', 'falls', 'bay'];
+const historicalKeywords = ['museum', 'castle', 'palace', 'cathedral', 'church', 'temple', 'monument', 'memorial', 'ruins', 'fort', 'tower', 'library', 'gallery', 'historic', 'heritage', 'ancient', 'basilica', 'abbey', 'mosque', 'synagogue'];
+
+function categorize(place) {
+  const p = place.toLowerCase();
+  if (hotelKeywords.some(k => p.includes(k))) return 'hotel';
+  if (restaurantKeywords.some(k => p.includes(k))) return 'restaurant';
+  if (historicalKeywords.some(k => p.includes(k))) return 'historical';
+  if (activityKeywords.some(k => p.includes(k))) return 'activity';
+  // If it has few commas (broad location), it's a city/destination
+  const parts = place.split(',').map(s => s.trim());
+  if (parts.length <= 3) return 'city';
+  return 'destination';
+}
+
+let allLocations = [];
+let activeFilter = 'all';
+
+fetch('locations.json').then(r => r.json()).then(data => {
+  // Filter out the "_" placeholder and very low-count entries
+  allLocations = data.filter(d => d.place && d.place !== '_' && d.photos >= 3).map(d => ({
+    ...d,
+    category: categorize(d.place)
+  }));
+
+  // Stats
+  const countries = new Set();
+  allLocations.forEach(l => {
+    const parts = l.place.split(',');
+    countries.add(parts[parts.length - 1].trim());
+  });
+  const years = new Set();
+  allLocations.forEach(l => { if(l.first_visit) years.add(l.first_visit.slice(0,4)); if(l.last_visit) years.add(l.last_visit.slice(0,4)); });
+  
+  document.getElementById('stat-places').textContent = allLocations.length.toLocaleString();
+  document.getElementById('stat-countries').textContent = countries.size;
+  document.getElementById('stat-photos').textContent = allLocations.reduce((s,l) => s + l.photos, 0).toLocaleString();
+  document.getElementById('stat-years').textContent = years.size;
+
+  initMap();
+  renderCards();
+});
+
+let map, markers;
+function initMap() {
+  map = L.map('map', { zoomControl: true }).setView([30, 0], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+  }).addTo(map);
+  
+  markers = L.markerClusterGroup({ maxClusterRadius: 50, spiderfyOnMaxZoom: true });
+  addMarkers(allLocations);
+  map.addLayer(markers);
+}
+
+function addMarkers(locs) {
+  markers.clearLayers();
+  locs.forEach(l => {
+    const m = L.circleMarker([l.lat, l.lng], {
+      radius: Math.min(3 + Math.log2(l.photos) * 2, 15),
+      fillColor: getColor(l.category),
+      color: '#fff', weight: 1, fillOpacity: 0.8
+    });
+    m.bindPopup(`<strong>${l.place}</strong><br>${l.photos} photos<br>${l.first_visit || '?'} → ${l.last_visit || '?'}`);
+    markers.addLayer(m);
+  });
+}
+
+function getColor(cat) {
+  return { city: '#5ba3e6', hotel: '#b35ae6', restaurant: '#e6a35b', activity: '#5be6a3', historical: '#e65b5b', destination: '#5be6e6' }[cat] || '#667eea';
+}
+
+function renderCards() {
+  const search = document.getElementById('search').value.toLowerCase();
+  let filtered = allLocations;
+  if (activeFilter !== 'all') filtered = filtered.filter(l => l.category === activeFilter);
+  if (search) filtered = filtered.filter(l => l.place.toLowerCase().includes(search));
+  
+  document.getElementById('count-display').textContent = `Showing ${filtered.length} of ${allLocations.length} locations`;
+  
+  const grid = document.getElementById('grid');
+  grid.innerHTML = filtered.slice(0, 200).map((l,i) => {
+    const realIdx = allLocations.indexOf(l);
+    return `
+    <div class="location-card" data-lat="${l.lat}" data-lng="${l.lng}" data-idx="${realIdx}">
+      <button class="edit-btn" onclick="event.stopPropagation();openEdit(${realIdx})">✏️ Edit</button>
+      <span class="category cat-${l.category}">${l.category}</span>
+      <h3>${l.place}</h3>
+      <div class="meta">
+        <span>📸 ${l.photos} photos</span>
+        <span>📅 ${l.first_visit || '?'} → ${l.last_visit || '?'}</span>
+      </div>
+    </div>
+  `}).join('');
+
+  addMarkers(filtered);
+
+  grid.querySelectorAll('.location-card').forEach(card => {
+    card.addEventListener('click', () => {
+      map.setView([card.dataset.lat, card.dataset.lng], 14);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+document.querySelectorAll('.filters button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    renderCards();
+  });
+});
+document.getElementById('search').addEventListener('input', renderCards);
+
+// --- Edit Mode ---
+let editIndex = null;
+let dirty = false;
+
+function openEdit(idx) {
+  editIndex = idx;
+  const loc = allLocations[idx];
+  document.getElementById('edit-place').value = loc.place;
+  document.getElementById('edit-cat').value = loc.category;
+  document.getElementById('edit-modal').classList.add('open');
+  // Lookup nearby places
+  document.getElementById('suggestions').innerHTML = '<span class="loading">Looking up nearby places...</span>';
+  fetch(`/api/lookup?lat=${loc.lat}&lng=${loc.lng}`)
+    .then(r => r.json())
+    .then(data => {
+      let html = '';
+      if (data.reverse && data.reverse.display_name) {
+        html += `<div class="suggestion" onclick="pickSuggestion(this)">${data.reverse.display_name}</div>`;
+        if (data.reverse.name && data.reverse.name !== data.reverse.display_name) {
+          html += `<div class="suggestion" onclick="pickSuggestion(this)">${data.reverse.name}</div>`;
+        }
+      }
+      if (data.nearby && data.nearby.length) {
+        data.nearby.forEach(n => {
+          html += `<div class="suggestion" onclick="pickSuggestion(this)">${n.display_name}</div>`;
+        });
+      }
+      if (!html) html = '<span class="loading">No results found nearby</span>';
+      document.getElementById('suggestions').innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById('suggestions').innerHTML = '<span class="loading">Lookup failed</span>';
+    });
+}
+
+function pickSuggestion(el) {
+  document.getElementById('edit-place').value = el.textContent;
+}
+
+function saveEdit() {
+  if (editIndex === null) return;
+  const loc = allLocations[editIndex];
+  loc.place = document.getElementById('edit-place').value;
+  loc.category = document.getElementById('edit-cat').value;
+  dirty = true;
+  document.getElementById('save-all').style.display = 'block';
+  closeEdit();
+  renderCards();
+}
+
+function deleteEdit() {
+  if (editIndex === null) return;
+  allLocations.splice(editIndex, 1);
+  dirty = true;
+  document.getElementById('save-all').style.display = 'block';
+  closeEdit();
+  renderCards();
+}
+
+function closeEdit() {
+  editIndex = null;
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveAll() {
+  const data = allLocations.map(({place, lat, lng, photos, first_visit, last_visit, category}) => ({place, lat, lng, photos, first_visit, last_visit, category}));
+  fetch('/api/save', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data, null, 2) })
+    .then(r => r.json())
+    .then(() => { dirty = false; document.getElementById('save-all').style.display = 'none'; alert('Saved!'); })
+    .catch(e => alert('Save failed: ' + e.message));
+}
+
+// Close modal on backdrop click
+document.getElementById('edit-modal').addEventListener('click', e => { if (e.target.id === 'edit-modal') closeEdit(); });
+</script>
+</body>
+</html>

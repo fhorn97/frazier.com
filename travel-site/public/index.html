@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where I've Been</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; }
+#map { width: 100%; height: 65vh; }
+header { padding: 2.5rem 2rem; text-align: center; background: linear-gradient(135deg, #1a1a2e, #16213e); }
+header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(90deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+header .stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+header .stat { text-align: center; }
+header .stat .num { font-size: 2rem; font-weight: 700; color: #667eea; }
+header .stat .label { font-size: 0.85rem; color: #888; text-transform: uppercase; }
+.filters { padding: 1rem 2rem; background: #111; display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; align-items: center; }
+.filters button { padding: 0.5rem 1rem; border: 1px solid #333; border-radius: 2rem; background: transparent; color: #ccc; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+.filters button:hover, .filters button.active { background: #667eea; border-color: #667eea; color: #fff; }
+#locations { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.location-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.location-card { background: #1a1a1a; border: 1px solid #222; border-radius: 12px; padding: 1.25rem; transition: all 0.2s; cursor: pointer; }
+.location-card:hover { border-color: #667eea; transform: translateY(-2px); }
+.location-card h3 { font-size: 1rem; margin-bottom: 0.4rem; color: #fff; }
+.location-card .meta { font-size: 0.8rem; color: #888; }
+.location-card .category { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+.cat-city { background: #1a3a5c; color: #5ba3e6; }
+.cat-hotel { background: #3a1a5c; color: #b35ae6; }
+.cat-restaurant { background: #5c3a1a; color: #e6a35b; }
+.cat-activity { background: #1a5c3a; color: #5be6a3; }
+.cat-historical { background: #5c1a1a; color: #e65b5b; }
+.cat-destination { background: #1a5c5c; color: #5be6e6; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌍 Where I've Been</h1>
+  <p style="color:#888">Places, recommendations & memories</p>
+  <div class="stats">
+    <div class="stat"><div class="num" id="stat-countries">-</div><div class="label">Countries</div></div>
+    <div class="stat"><div class="num" id="stat-cities">-</div><div class="label">Cities</div></div>
+    <div class="stat"><div class="num" id="stat-places">-</div><div class="label">Places</div></div>
+  </div>
+</header>
+<div id="map"></div>
+<div class="filters">
+  <button class="active" data-cat="all">All</button>
+  <button data-cat="city">Cities</button>
+  <button data-cat="destination">Destinations</button>
+  <button data-cat="hotel">Hotels</button>
+  <button data-cat="restaurant">Restaurants</button>
+  <button data-cat="activity">Activities</button>
+  <button data-cat="historical">Historical</button>
+</div>
+<div id="locations"><div class="location-grid" id="grid"></div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+let allLocations = [];
+let activeFilter = 'all';
+
+fetch('locations-public.json').then(r => r.json()).then(data => {
+  allLocations = data;
+
+  const countries = new Set();
+  const cities = new Set();
+  allLocations.forEach(l => {
+    if (l.country) countries.add(l.country);
+    if (l.category === 'city') cities.add(l.place);
+  });
+
+  document.getElementById('stat-countries').textContent = countries.size;
+  document.getElementById('stat-cities').textContent = cities.size;
+  document.getElementById('stat-places').textContent = allLocations.length;
+
+  initMap();
+  renderCards();
+});
+
+let map, markers;
+function initMap() {
+  map = L.map('map').setView([30, 0], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+  }).addTo(map);
+  markers = L.markerClusterGroup({ maxClusterRadius: 50 });
+  addMarkers(allLocations);
+  map.addLayer(markers);
+}
+
+function addMarkers(locs) {
+  markers.clearLayers();
+  locs.forEach(l => {
+    const m = L.circleMarker([l.lat, l.lng], {
+      radius: 7, fillColor: getColor(l.category), color: '#fff', weight: 1, fillOpacity: 0.8
+    });
+    let popup = `<strong>${l.place}</strong>`;
+    if (l.year) popup += `<br><small>${l.year}</small>`;
+    m.bindPopup(popup);
+    markers.addLayer(m);
+  });
+}
+
+function getColor(cat) {
+  return { city: '#5ba3e6', hotel: '#b35ae6', restaurant: '#e6a35b', activity: '#5be6a3', historical: '#e65b5b', destination: '#5be6e6' }[cat] || '#667eea';
+}
+
+function renderCards() {
+  let filtered = allLocations;
+  if (activeFilter !== 'all') filtered = filtered.filter(l => l.category === activeFilter);
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = filtered.map(l => `
+    <div class="location-card" data-lat="${l.lat}" data-lng="${l.lng}">
+      <span class="category cat-${l.category}">${l.category}</span>
+      <h3>${l.place}</h3>
+      <div class="meta">${l.year ? `Visited ${l.year}` : ''}</div>
+    </div>
+  `).join('');
+
+  addMarkers(filtered);
+
+  grid.querySelectorAll('.location-card').forEach(card => {
+    card.addEventListener('click', () => {
+      map.setView([card.dataset.lat, card.dataset.lng], 12);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+document.querySelectorAll('.filters button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    renderCards();
+  });
+});
+</script>
+</body>
+</html>
