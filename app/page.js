@@ -2,95 +2,113 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <h1>Hey, I'm Frazier.</h1>
-        <p className="tagline">
-          I build things that make people's lives better.
+        <p className="hero__eyebrow">founder — builder — photographer</p>
+        <h1 className="hero__name">FRAZIER HORN</h1>
+        <p className="hero__tagline">
+          I build things that make people's lives better. Right now I'm building
+          intelligence infrastructure for service industries — but I'm also a
+          photographer, a perpetual student, and someone who believes empathy is
+          a design principle, not a soft skill.
         </p>
-        <p className="intro">
-          Right now I'm building intelligence infrastructure for service
-          industries. But I'm also a photographer, a perpetual student, and
-          someone who believes empathy is a design principle — not a soft skill.
-        </p>
+        <span className="hero__scroll">( scroll )</span>
       </section>
 
       <section className="section">
-        <h2>Now</h2>
-        <div className="card">
-          <h3>Stratus / ServiceSync AI</h3>
-          <p>
-            AI-driven decision layer for automotive fixed operations. Turning
-            service department chaos into structured, actionable intelligence.
-          </p>
-          <p className="meta">
-            HornHaus Technologies, Inc. — Raising pre-seed.
-          </p>
-        </div>
-      </section>
-
-      <section className="section">
-        <h2>Background</h2>
-        <div className="timeline-item">
-          <span className="year">2024</span>
-          <div>
-            <h3>Columbia University</h3>
-            <p>M.S. Technology Management</p>
-            <p className="meta">
-              Graduation speaker. HCM Talks presenter. Startup used as case
-              study.
+        <span className="section-label">NOW</span>
+        <div className="editorial-row">
+          <span className="editorial-row__index">01</span>
+          <div className="editorial-row__content">
+            <h3 className="editorial-row__title">Stratus / ServiceSync AI</h3>
+            <p className="editorial-row__body">
+              AI-driven decision layer for automotive fixed operations. Turning
+              service department chaos into structured, actionable intelligence.
             </p>
-          </div>
-        </div>
-        <div className="timeline-item">
-          <span className="year">2021</span>
-          <div>
-            <h3>Boston University</h3>
-            <p>B.A. Computer Science & Economics</p>
-            <p className="meta">
-              Spark! Innovation Fellowship. Built across Python, Java, C++,
-              JavaScript, SQL, Kotlin.
-            </p>
-          </div>
-        </div>
-        <div className="timeline-item">
-          <span className="year">Always</span>
-          <div>
-            <h3>Third-generation automotive</h3>
-            <p>
-              Grew up watching my father navigate broken systems. The service
-              department was always chaotic — not because of the people, but
-              because of the tools.
-            </p>
+            <div className="editorial-row__tags">
+              <span className="tag">AI</span>
+              <span className="tag">Automotive</span>
+              <span className="tag">Pre-seed</span>
+            </div>
+            <p className="editorial-row__meta">HornHaus Technologies, Inc.</p>
           </div>
         </div>
       </section>
 
       <section className="section">
-        <h2>I care about</h2>
-        <p>
-          Photography — architecture, travel, and moments most people walk past.
-        </p>
-        <p>
-          Building things — from AI search algorithms to full-stack apps to the
-          company I'm running now.
-        </p>
-        <p>
-          Doing things for others — the service advisors and technicians I build
-          for are the backbone of a $157B industry, and they've been forgotten
-          by enterprise software for thirty years.
-        </p>
-        <p>
-          Happiness by Design — my framework for building technology that
-          centers the emotional reality of the people who use it.
-        </p>
+        <span className="section-label">BACKGROUND</span>
+        <div className="timeline">
+          <div className="timeline-item">
+            <span className="timeline-item__year">2024</span>
+            <div className="timeline-item__content">
+              <h3>Columbia University</h3>
+              <p>M.S. Technology Management</p>
+              <p className="meta">
+                Graduation speaker. HCM Talks presenter. Startup used as case
+                study.
+              </p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <span className="timeline-item__year">2021</span>
+            <div className="timeline-item__content">
+              <h3>Boston University</h3>
+              <p>B.A. Computer Science &amp; Economics</p>
+              <p className="meta">Spark! Innovation Fellowship.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <span className="timeline-item__year">Always</span>
+            <div className="timeline-item__content">
+              <h3>Third-generation automotive</h3>
+              <p>
+                Grew up watching my father navigate broken systems. The service
+                department was always chaotic — not because of the people, but
+                because of the tools.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <footer>
-        <div>
-          <a href="https://github.com/fhorn97">GitHub</a>
-          <a href="https://linkedin.com/in/frazierhorn">LinkedIn</a>
-          <a href="https://servicesync.io">ServiceSync AI</a>
+      <section className="section">
+        <span className="section-label">INTERESTS</span>
+        <div className="interests-grid">
+          <div className="interest-item">
+            <h3 className="interest-item__title">Photography</h3>
+            <p className="interest-item__description">
+              Architecture, travel, and moments most people walk past.
+            </p>
+          </div>
+          <div className="interest-item">
+            <h3 className="interest-item__title">Building Things</h3>
+            <p className="interest-item__description">
+              From AI search algorithms to full-stack apps to the company I'm
+              running now.
+            </p>
+          </div>
+          <div className="interest-item">
+            <h3 className="interest-item__title">Doing Things for Others</h3>
+            <p className="interest-item__description">
+              The service advisors and technicians forgotten by enterprise
+              software for thirty years.
+            </p>
+          </div>
+          <div className="interest-item">
+            <h3 className="interest-item__title">Happiness by Design</h3>
+            <p className="interest-item__description">
+              Building technology that centers the emotional reality of the
+              people who use it.
+            </p>
+          </div>
         </div>
-        <span>Frazier Horn — 2026</span>
+      </section>
+
+      <footer className="footer">
+        <div className="footer__links">
+          <a href="https://github.com/fhorn97" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://linkedin.com/in/frazierhorn" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://servicesync.io" target="_blank" rel="noopener noreferrer">ServiceSync AI</a>
+        </div>
+        <span className="footer__copy">Frazier Horn — 2026</span>
       </footer>
     </>
   );

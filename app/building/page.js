@@ -1,90 +1,90 @@
-export default function Building() {
+export default function BuildingPage() {
+  const projects = [
+    {
+      title: "ServiceSync AI",
+      body: "Intelligence infrastructure for automotive service departments. Data pipelines, knowledge bases, customer bots, dashboards.",
+      tags: ["Python", "TypeScript", "AWS", "Supabase"],
+    },
+    {
+      title: "Screenpipe Plugins",
+      body: "AI plugins for real-time screen and audio processing — meeting summarizer, Notion sync, automated Reddit posting.",
+      tags: ["Next.js", "TypeScript", "OpenAI"],
+    },
+    {
+      title: "LangChain Ingestion Pipeline",
+      body: "Document processing pipeline with intelligent chunking, vector embedding, and storage for AI/ML applications.",
+      tags: ["Python", "LangChain", "Pinecone"],
+    },
+    {
+      title: "B+ Tree",
+      body: "Complete B+ tree data structure implementation. Insertion, search, and range queries with internal/leaf node separation.",
+      tags: ["C++"],
+    },
+    {
+      title: "Eight Puzzle Solver",
+      body: "State-space search algorithms — BFS, DFS, Greedy Best-First, and A*.",
+      tags: ["Python"],
+    },
+    {
+      title: "Reliable Data Transfer Protocol",
+      body: "Network protocol over a simulated lossy channel. Handles ACKs, timeouts, retransmissions, sequence numbers.",
+      tags: ["Java"],
+    },
+    {
+      title: "Full-Stack Web Applications",
+      body: "REST APIs, Redis caching, Angular SPAs, Express servers, Yelp integration.",
+      tags: ["Node.js", "Express", "Angular", "Redis"],
+    },
+    {
+      title: "Android Apps",
+      body: "Mood tracker with speech-to-text, journal app with persistent storage.",
+      tags: ["Java", "Kotlin", "Android SDK"],
+    },
+  ];
+
   return (
-    <>
-      <section className="section" style={{ paddingTop: '4rem' }}>
-        <h2>Things I've Built</h2>
-        <p>
-          I've been writing code since freshman year of college and haven't
-          stopped. Here's a selection — from AI and systems to full-stack web
-          apps to mobile.
+    <main>
+      <header className="page-header">
+        <span className="page-eyebrow">SELECTED WORK</span>
+        <h1 className="page-title">Building</h1>
+        <p className="page-header__intro">
+          Writing code since freshman year of college and haven&apos;t stopped.
         </p>
+      </header>
 
-        <div className="card">
-          <h3>ServiceSync AI</h3>
-          <p>
-            Intelligence infrastructure for automotive service departments.
-            Data pipelines, knowledge bases, customer bots, dashboards.
-          </p>
-          <p className="meta">Python, TypeScript, AWS, Supabase</p>
-        </div>
+      <section className="section">
+        <span className="section-label">PROJECTS</span>
 
-        <div className="card">
-          <h3>Screenpipe Plugins</h3>
-          <p>
-            AI plugins for real-time screen and audio processing — meeting
-            summarizer, Notion sync, automated Reddit posting.
-          </p>
-          <p className="meta">Next.js, TypeScript, OpenAI</p>
-        </div>
-
-        <div className="card">
-          <h3>LangChain Ingestion Pipeline</h3>
-          <p>
-            Document processing pipeline with intelligent chunking, vector
-            embedding, and storage for AI/ML applications.
-          </p>
-          <p className="meta">Python, LangChain, Pinecone</p>
-        </div>
-
-        <div className="card">
-          <h3>B+ Tree</h3>
-          <p>
-            Complete B+ tree data structure implementation. Insertion, search,
-            and range queries with internal/leaf node separation.
-          </p>
-          <p className="meta">C++</p>
-        </div>
-
-        <div className="card">
-          <h3>Eight Puzzle Solver</h3>
-          <p>
-            State-space search algorithms — BFS, DFS, Greedy Best-First, and
-            A* — solving the classic Eight Puzzle.
-          </p>
-          <p className="meta">Python</p>
-        </div>
-
-        <div className="card">
-          <h3>Reliable Data Transfer Protocol</h3>
-          <p>
-            Network protocol implementation over a simulated lossy channel.
-            Handles ACKs, timeouts, retransmissions, sequence numbers.
-          </p>
-          <p className="meta">Java</p>
-        </div>
-
-        <div className="card">
-          <h3>Full-Stack Web Applications</h3>
-          <p>
-            REST APIs, Redis caching, Angular SPAs, Express servers, Yelp
-            integration, unit testing with Mocha.
-          </p>
-          <p className="meta">Node.js, Express, Angular, Redis</p>
-        </div>
-
-        <div className="card">
-          <h3>Android Apps</h3>
-          <p>
-            Mood tracker with speech-to-text, journal app with persistent
-            storage, various UI experiments.
-          </p>
-          <p className="meta">Java, Kotlin, Android SDK</p>
-        </div>
-
-        <p style={{ marginTop: '2rem' }}>
-          <a href="https://github.com/fhorn97">See everything on GitHub →</a>
-        </p>
+        {projects.map((project, i) => (
+          <div className="editorial-row" key={project.title}>
+            <span className="editorial-row__index">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="editorial-row__content">
+              <h2 className="editorial-row__title">{project.title}</h2>
+              <p className="editorial-row__body">{project.body}</p>
+              <div className="editorial-row__tags">
+                {project.tags.map((tag) => (
+                  <span className="tag" key={tag}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </section>
-    </>
+
+      <footer className="section">
+        <a
+          href="https://github.com/frazierhorn"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="page-footer-link"
+        >
+          View more on GitHub →
+        </a>
+      </footer>
+    </main>
   );
 }

@@ -429,14 +429,20 @@ function tick() {
     mesh.position.z = THREE.MathUtils.lerp(sz, 0,  p);
     mesh.rotation.y = THREE.MathUtils.lerp(sRotY, 0, p);
 
-    u.hover += (u.hoverTarget - u.hover) * 0.1;
-    const s = (u.intro || 0) * (1 + u.hover * 0.05);
+    u.hover += (u.hoverTarget - u.hover) * 0.08;
+    // On hover: grow to 1.45x (shows card at its "real" prominent size) and reveal color via uHover shader
+    const s = (u.intro || 0) * (1 + u.hover * 0.45);
     mesh.scale.setScalar(Math.max(s, 0.0001));
 
     const depthDim = THREE.MathUtils.clamp(
       THREE.MathUtils.mapLinear(sz, -RADIUS * 2, 0, 0.34, 1), 0.34, 1);
     const uniforms = mesh.material.uniforms;
-    uniforms.uDim.value   = THREE.MathUtils.lerp(depthDim, 1, p) + u.hover * 0.05;
+    // Dim non-hovered cards slightly when something is hovered
+    const anyHovered = hovered ? 1 : 0;
+    const isHovered  = u.hover;
+    const baseDim    = THREE.MathUtils.lerp(depthDim, 1, p);
+    const dimmedBy   = anyHovered * (1 - isHovered) * 0.45; // non-hovered cards dim by 45%
+    uniforms.uDim.value = baseDim - dimmedBy + isHovered * 0.05;
     uniforms.uVel.value   = velClamped;
     uniforms.uHover.value = u.hover;
   }
