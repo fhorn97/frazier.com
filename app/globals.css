@@ -215,3 +215,9 @@ footer a:hover {
   .section { padding: 4rem 2rem; }
   footer { padding: 2rem; flex-direction: column; gap: 1rem; }
 }
+
+.iframe-page {
+  width: 100%;
+  border: none;
+  flex: 1;
+}

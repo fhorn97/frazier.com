@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frazier Horn — Photography</title>
+  <meta name="description" content="Frazier Horn — architecture, travel, and quiet moments." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="photography.css" />
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js" } }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__meta">
+      <span>frazier horn</span>
+      <span>photography — 2026</span>
+    </div>
+    <div class="preloader__count" id="preloaderCount">0</div>
+    <div class="preloader__bar"><span id="preloaderBar"></span></div>
+  </div>
+
+  <!-- webgl canvas -->
+  <div class="gl" id="gl"></div>
+
+  <!-- header -->
+  <header class="header">
+    <a class="logo" href="/" data-cursor>
+      <span class="logo__mark">FH</span>
+    </a>
+
+    <nav class="view-nav" id="viewNav">
+      <button class="view-nav__btn is-active" data-view="spiral" data-cursor>spiral</button>
+      <span class="view-nav__dot"></span>
+      <button class="view-nav__btn" data-view="list" data-cursor>grid</button>
+    </nav>
+
+    <button class="menu-btn" id="menuBtn" data-cursor>
+      <span class="menu-btn__label">menu</span>
+      <span class="menu-btn__dot"></span>
+    </button>
+  </header>
+
+  <!-- hero title -->
+  <div class="hero">
+    <p class="hero__eyebrow" id="heroEyebrow">architecture · travel · moments</p>
+    <h1 class="hero__title" id="heroTitle">FRAZIER&nbsp;HORN</h1>
+  </div>
+
+  <!-- rotating badge -->
+  <div class="badge" id="badge">
+    <svg viewBox="0 0 120 120">
+      <defs>
+        <path id="badgeCircle" d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0" />
+      </defs>
+      <text>
+        <textPath href="#badgeCircle">photography 2026 — architecture · travel · light —&#160;</textPath>
+      </text>
+    </svg>
+    <span class="badge__center">●</span>
+  </div>
+
+  <!-- current work label -->
+  <div class="work-label" id="workLabel">
+    <span class="work-label__index" id="workIndex">01</span>
+    <span class="work-label__line"></span>
+    <span class="work-label__title" id="workTitle">new york</span>
+  </div>
+
+  <!-- scroll hint -->
+  <div class="scroll-hint" id="scrollHint"><span>( scroll )</span></div>
+
+  <!-- menu overlay -->
+  <div class="menu" id="menu">
+    <div class="menu__panel"></div>
+    <div class="menu__inner">
+      <nav class="menu__links">
+        <a href="/" data-cursor><em>01</em><span>home</span></a>
+        <a href="/building" data-cursor><em>02</em><span>building</span></a>
+        <a href="/travel" data-cursor><em>03</em><span>travel</span></a>
+        <a href="/writing" data-cursor><em>04</em><span>writing</span></a>
+      </nav>
+      <div class="menu__footer">
+        <div>
+          <p class="menu__footer-label">contact</p>
+          <a href="mailto:frazier@servicesync.io" data-cursor>frazier@servicesync.io</a>
+        </div>
+        <div>
+          <p class="menu__footer-label">links</p>
+          <a href="https://instagram.com" target="_blank" data-cursor>instagram</a>
+          <a href="https://github.com/fhorn97" target="_blank" data-cursor>github</a>
+        </div>
+        <div>
+          <p class="menu__footer-label">based in</p>
+          <p>new york — boston</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- grain overlay -->
+  <div class="grain"></div>
+
+  <!-- custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <script type="module" src="photography.js"></script>
+</body>
+</html>
