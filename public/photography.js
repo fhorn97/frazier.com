@@ -4,33 +4,34 @@ import * as THREE from 'three';
 /*  data — your 26 photos mapped to titles                            */
 /* ------------------------------------------------------------------ */
 
+// ar = actual aspect ratio (width/height) of each photo
 const WORKS = [
-  { title: 'new york',         file: '02cb64_84b3183d098b4311b254b9fca18524c1~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'architecture',     file: '02cb64_5118ae8db5714786b5031cfeb02964d1~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'street light',     file: '02cb64_fce617beb9e24babb83a778368813249~mv2_d_2048_1365_s_2.jpg' },
-  { title: 'portrait i',       file: '02cb64_2eee2dcc24b0420f95fea77745c78232~mv2_d_3072_4608_s_4_2.jpg' },
-  { title: 'urban geometry',   file: '02cb64_fedc5a8cbe874181a05bc8184d8339fc~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'city study',       file: '02cb64_5ec76c6af05041b89e033633d0e76f56~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'portrait ii',      file: '02cb64_4041f10a04c34f45ba7ff5a87cfa7e8a~mv2_d_2819_4357_s_4_2.jpg' },
-  { title: 'travel',           file: '02cb64_350e463c502f47498ca8dcfc26d560c8~mv2_d_3886_2776_s_4_2.jpg' },
-  { title: 'light study',      file: '02cb64_748ae650f80a498684600fe7ab032acb~mv2_d_2048_1380_s_2.jpg' },
-  { title: 'motion',           file: '02cb64_fa524e3d91c64dd49af91cce1ca91078~mv2_d_4337_2157_s_2.jpg' },
-  { title: 'wide open',        file: '02cb64_f21c9f134e8a4ccea6b7a171730224da~mv2_d_5974_2711_s_4_2.jpg' },
-  { title: 'portrait iii',     file: '02cb64_904b6504ff0d42c49f0fcd8b956f92a2~mv2_d_2054_3082_s_2.jpg' },
-  { title: 'dusk',             file: '02cb64_b2fb46a5b27e4f0d827c511428574390~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'structure',        file: '02cb64_81b20e893e0447efaaef67abd571a2a4~mv2_d_5896_3033_s_4_2.jpg' },
-  { title: 'portrait iv',      file: '02cb64_fb20f937b37141489464aa76c59481d8~mv2_d_1365_2048_s_2.jpg' },
-  { title: 'landscape',        file: '02cb64_2bfbdbad1ab74993a550370d48cc85e0~mv2_d_3988_2732_s_4_2.jpg' },
-  { title: 'quiet moment',     file: '02cb64_759cf8286b304f19ad599d20792f31db~mv2_d_4032_3024_s_4_2.jpg' },
-  { title: 'color study',      file: '02cb64_85175b322c0d4fbd90025f26bc640654~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'portrait v',       file: '02cb64_bf8568ddb114440e93761e75b426bacf~mv2_d_3550_4000_s_4_2.jpg' },
-  { title: 'urban texture',    file: '02cb64_01de4c2ba1124347ae20ac1694b0fd3b~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'fragment',         file: '02cb64_2c844004a80f47158dd34e9dfcaba340~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'portrait vi',      file: '02cb64_cb98da4a18ec4cbda2ea33c5fe9caa3a~mv2_d_2010_2814_s_2.jpg' },
-  { title: 'stillness',        file: '02cb64_5721ed3a313c49a58f52b9a752924b6b~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'transit',          file: '02cb64_bbcf28437ee748059137645ebb039ef2~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'after hours',      file: '02cb64_bbd0680be51a4b4294816850da578426~mv2_d_6000_4000_s_4_2.jpg' },
-  { title: 'last light',       file: '02cb64_fedc5a8cbe874181a05bc8184d8339fc~mv2_d_6000_4000_s_4_2.jpg' },
+  { title: 'new york',         file: '02cb64_84b3183d098b4311b254b9fca18524c1~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'architecture',     file: '02cb64_5118ae8db5714786b5031cfeb02964d1~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'street light',     file: '02cb64_fce617beb9e24babb83a778368813249~mv2_d_2048_1365_s_2.jpg',    ar: 1.500 },
+  { title: 'portrait i',       file: '02cb64_2eee2dcc24b0420f95fea77745c78232~mv2_d_3072_4608_s_4_2.jpg',  ar: 0.667 },
+  { title: 'urban geometry',   file: '02cb64_fedc5a8cbe874181a05bc8184d8339fc~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'city study',       file: '02cb64_5ec76c6af05041b89e033633d0e76f56~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'portrait ii',      file: '02cb64_4041f10a04c34f45ba7ff5a87cfa7e8a~mv2_d_2819_4357_s_4_2.jpg',  ar: 0.647 },
+  { title: 'travel',           file: '02cb64_350e463c502f47498ca8dcfc26d560c8~mv2_d_3886_2776_s_4_2.jpg',  ar: 1.400 },
+  { title: 'light study',      file: '02cb64_748ae650f80a498684600fe7ab032acb~mv2_d_2048_1380_s_2.jpg',    ar: 1.485 },
+  { title: 'motion',           file: '02cb64_fa524e3d91c64dd49af91cce1ca91078~mv2_d_4337_2157_s_2.jpg',    ar: 2.013 },
+  { title: 'wide open',        file: '02cb64_f21c9f134e8a4ccea6b7a171730224da~mv2_d_5974_2711_s_4_2.jpg',  ar: 2.206 },
+  { title: 'portrait iii',     file: '02cb64_904b6504ff0d42c49f0fcd8b956f92a2~mv2_d_2054_3082_s_2.jpg',    ar: 0.667 },
+  { title: 'dusk',             file: '02cb64_b2fb46a5b27e4f0d827c511428574390~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'structure',        file: '02cb64_81b20e893e0447efaaef67abd571a2a4~mv2_d_5896_3033_s_4_2.jpg',  ar: 1.944 },
+  { title: 'portrait iv',      file: '02cb64_fb20f937b37141489464aa76c59481d8~mv2_d_1365_2048_s_2.jpg',    ar: 0.667 },
+  { title: 'landscape',        file: '02cb64_2bfbdbad1ab74993a550370d48cc85e0~mv2_d_3988_2732_s_4_2.jpg',  ar: 1.461 },
+  { title: 'quiet moment',     file: '02cb64_759cf8286b304f19ad599d20792f31db~mv2_d_4032_3024_s_4_2.jpg',  ar: 1.333 },
+  { title: 'color study',      file: '02cb64_85175b322c0d4fbd90025f26bc640654~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'portrait v',       file: '02cb64_bf8568ddb114440e93761e75b426bacf~mv2_d_3550_4000_s_4_2.jpg',  ar: 0.887 },
+  { title: 'urban texture',    file: '02cb64_01de4c2ba1124347ae20ac1694b0fd3b~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'fragment',         file: '02cb64_2c844004a80f47158dd34e9dfcaba340~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'portrait vi',      file: '02cb64_cb98da4a18ec4cbda2ea33c5fe9caa3a~mv2_d_2010_2814_s_2.jpg',    ar: 0.714 },
+  { title: 'stillness',        file: '02cb64_5721ed3a313c49a58f52b9a752924b6b~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'transit',          file: '02cb64_bbcf28437ee748059137645ebb039ef2~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'after hours',      file: '02cb64_bbd0680be51a4b4294816850da578426~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
+  { title: 'last light',       file: '02cb64_fedc5a8cbe874181a05bc8184d8339fc~mv2_d_6000_4000_s_4_2.jpg',  ar: 1.500 },
 ];
 
 const N = WORKS.length;
@@ -429,20 +430,25 @@ function tick() {
     mesh.position.z = THREE.MathUtils.lerp(sz, 0,  p);
     mesh.rotation.y = THREE.MathUtils.lerp(sRotY, 0, p);
 
-    u.hover += (u.hoverTarget - u.hover) * 0.08;
-    // On hover: grow to 1.45x (shows card at its "real" prominent size) and reveal color via uHover shader
-    const s = (u.intro || 0) * (1 + u.hover * 0.45);
-    mesh.scale.setScalar(Math.max(s, 0.0001));
+    u.hover += (u.hoverTarget - u.hover) * 0.1;
+
+    // Base scale (uniform, intro animation)
+    const base = u.intro || 0;
+    // On hover: morph x/y scale to match real photo aspect ratio
+    // Default card is PLANE_W x PLANE_H = 2.15 x 2.85, default ar = 2.15/2.85 = 0.754
+    const defaultAr = PLANE_W / PLANE_H;
+    const photoAr   = WORKS[u.index].ar;
+    // Target scale: keep the same area, just reshape
+    // Scale x by ratio of photoAr/defaultAr, keep y = 1 (height stays constant)
+    const targetScaleX = THREE.MathUtils.lerp(1, photoAr / defaultAr, u.hover);
+    mesh.scale.x = Math.max(base * targetScaleX, 0.0001);
+    mesh.scale.y = Math.max(base, 0.0001);
+    mesh.scale.z = Math.max(base, 0.0001);
 
     const depthDim = THREE.MathUtils.clamp(
       THREE.MathUtils.mapLinear(sz, -RADIUS * 2, 0, 0.34, 1), 0.34, 1);
     const uniforms = mesh.material.uniforms;
-    // Dim non-hovered cards slightly when something is hovered
-    const anyHovered = hovered ? 1 : 0;
-    const isHovered  = u.hover;
-    const baseDim    = THREE.MathUtils.lerp(depthDim, 1, p);
-    const dimmedBy   = anyHovered * (1 - isHovered) * 0.45; // non-hovered cards dim by 45%
-    uniforms.uDim.value = baseDim - dimmedBy + isHovered * 0.05;
+    uniforms.uDim.value   = THREE.MathUtils.lerp(depthDim, 1, p) + u.hover * 0.05;
     uniforms.uVel.value   = velClamped;
     uniforms.uHover.value = u.hover;
   }

@@ -3,3 +3,16 @@ node_modules/
 out/
 .DS_Store
 photo_locations_raw.csv
+__pycache__/
+*.pyc
+.idea/
+xcuserdata/
+*.log
+.Rhistory
+.~lock*
+webscraper_env/
+build/
+.env
+.env.local*
+*.pem
+*.key
